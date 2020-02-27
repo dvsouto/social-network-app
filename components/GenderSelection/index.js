@@ -34,7 +34,7 @@ class GenderSelection extends Component {
       <Form>
         <Picker
           mode="dropdown"
-          iosHeader="Selecione o gênero"
+          iosHeader="Gênero"
           iosIcon={<Icon name="arrow-dropdown-circle" style={{ color: Constants.PRIMARY_COLOR, fontSize: 25 }} />}
           style={{ width: undefined }}
           selectedValue={this.state.selected}

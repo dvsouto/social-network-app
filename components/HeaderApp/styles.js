@@ -10,17 +10,9 @@ const styles = StyleSheet.create({
     color: "white",
   },
   menuStyle: {
-    color: "white"
+    color: "white",
+    fontSize: 32,
   },
-  thumbnailProfile: {
-    marginTop: 12,
-    marginBottom: 8
-  },
-  nameProfile: {
-    color: "#777",
-    fontSize: 18,
-    fontFamily: "open-sans-bold"
-  }
 });
 
 export default styles;

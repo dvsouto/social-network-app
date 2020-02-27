@@ -12,6 +12,14 @@ import styles from './styles';
 
 class PeopleCard extends Component {
 
+  static defaultProps = {
+    user: {
+      name: '',
+      birthdate: '11 de Dezembro de 1996',
+      distance: 0
+    }
+  }
+
   constructor(props){
     super(props);
   }
@@ -25,9 +33,9 @@ class PeopleCard extends Component {
           <Left>
             <Thumbnail source={{uri: 'https://picsum.photos/350/350'}} />
             <Body>
-              <Text>Davi Souto</Text>
+              <Text>{ this.props.user.name }</Text>
               <Text note>11 de Dezembro de 1996</Text>
-              <Text note>0.2 km</Text>
+              <Text note>{ this.props.user.distance } km</Text>
             </Body>
           </Left>
 

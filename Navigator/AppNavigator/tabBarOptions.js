@@ -29,8 +29,8 @@ const tabBarOptions = {
   showIcon: true,
   pressOpacity: 0.65,
   indicatorStyle: {
-    backgroundColor: Constants.PRIMARY_COLOR,
-    opacity: 0.42
+    backgroundColor: "#7703fc",
+    opacity: 0.45
   }
 }
 

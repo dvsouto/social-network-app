@@ -4,17 +4,15 @@
  * @since 31/10/2019
  */
 import React, { Component } from 'react';
-
+import { YellowBox, Text, StatusBar } from 'react-native';
 import { AppLoading } from 'expo';
 
-import { Root, Drawer } from "native-base";
-
-import { YellowBox, Text } from 'react-native';
+import { Root } from "native-base";
 
 import * as Font from 'expo-font';
 
-import Sidebar from '@App/components/Sidebar';
-import AppContainer from '@App/Navigator/AppContainer';
+import Navigator from '@App/Navigator';
+// import NavigationService from '@Components/Navigator/NavigationService';
 
 /**
  * Carregar fontes em cache
@@ -45,6 +43,8 @@ export default class App extends Component {
       'open-sans': require('@App/assets/fonts/OpenSans-Regular.ttf'),
       'open-sans-bold': require('@App/assets/fonts/OpenSans-Bold.ttf'),
       'roboto': require('@App/assets/fonts/Roboto-Regular.ttf'),
+      'roboto-medium': require('@App/assets/fonts/Roboto-Medium.ttf'),
+      'Roboto_medium': require('@App/assets/fonts/Roboto-Medium.ttf'),
       'roboto-bold': require('@App/assets/fonts/Roboto-Bold.ttf'),
       'roboto-light': require('@App/assets/fonts/Roboto-Light.ttf'),
     });
@@ -81,16 +81,12 @@ export default class App extends Component {
 
     return (
       <Root>
-        <Drawer
-          ref={ (ref) => this.drawer = ref }
-          content={ <Sidebar /> }
-        >
-          <AppContainer
-            ref={nav => {
-              this.navigator = nav;
-            }}
-          />
-        </Drawer>
+        <StatusBar barStyle="light-content" />
+        <Navigator
+          ref={nav => {
+            this.navigator = nav;
+          }}
+        />
       </Root>
     );
   }
