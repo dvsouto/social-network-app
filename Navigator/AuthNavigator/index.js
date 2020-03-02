@@ -5,30 +5,44 @@
  * @since  09/05/2019
  */
 
-import { createStackNavigator } from 'react-navigation-stack';
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 
 // Screens
 import ScreenAuthenticate from '@App/screens/Authenticate';
-// import ScreenRegister from '@PaynetApp/screens/Register';
+import ScreenRegister from '@App/screens/Register';
+
+import Constants from '@App/Constants';
 
 /////////////////////////////////////////////////////////////////
 
 // Navigator de autenticação
 const AuthNavigator = createStackNavigator({
-  SignIn: {
+  Login: {
     title: 'Authenticate',
     screen: ScreenAuthenticate,
+    navigationOptions: {
+      headerShown: false,
+    }
   },
-  // Register: {
-  //   title: 'Register',
-  //   screen: ScreenRegister,
-  // }
+  Register: {
+    title: 'Register',
+    screen: ScreenRegister,
+    navigationOptions: {
+      headerShown: false,
+      headerTitle: "Registre-se",
+      headerBackTitle: "Voltar",
+    }
+  }
 }, {
-  initialRouteName: 'SignIn',
-  navigationOptions: {
+  initialRouteName: 'Login',
+  defaultNavigationOptions: {
+    headerTransparent: true,
+    gestureEnabled: true,
+    cardOverlayEnabled: true,
+    ...TransitionPresets.SlideFromRightIOS,
   },
-  headerMode: 'none',
-  mode: 'modal',
+  headerMode: 'screen',
+  gestureDirection: "horizontal",
   animationEnabled: true
 });
 

@@ -1,33 +1,58 @@
 /**
- * App Navigator
+ * Authenticate Navigator
+ * Screens to login, register, forget password, etc.
  * @author Davi Souto
- * @since  20/01/2020
+ * @since  09/05/2019
  */
 
-import { createMaterialTopTabNavigator } from 'react-navigation-tabs';
+import { createStackNavigator, TransitionPresets } from 'react-navigation-stack';
 
-import navigatorTabs from './navigatorTabs';
-import { tabBarOptions, defaultNavigationOptions } from './tabBarOptions';
+import HomeNavigator from '@App/Navigator/HomeNavigator';
 
-// import Ionicons from 'react-native-vector-icons/Ionicons';
-// import Icon from 'react-native-vector-icons/FontAwesome';
+// Screens
+import ScreenUserProfile from '@App/screens/UserProfile';
+import ScreenEditProfile from "@App/screens/EditProfile";
 
-//////////////////////////////////////////////////////////
+import Constants from '@App/Constants';
 
-// Navigator da aplicação
-const AppNavigator = createMaterialTopTabNavigator(
-  navigatorTabs,
-  {
-    initialRouteName: 'Profile',
-    headerMode: 'none',
-    tabBarOptions: tabBarOptions,
-    defaultNavigationOptions: defaultNavigationOptions,
-    // tabBarComponent: TabBarBottom,
-    tabBarPosition: "bottom",
-    animationEnabled: true,
-    swipeEnabled: true,
-    lazy: false,
+/////////////////////////////////////////////////////////////////
+
+// Navigator de autenticação
+const AppNavigator = createStackNavigator({
+  Home: {
+    title: "Home",
+    screen: HomeNavigator,
+    navigationOptions: {
+      headerShown: false,
+    }
+  },
+  UserProfile: {
+    title: 'User Profile',
+    screen: ScreenUserProfile,
+    navigationOptions: {
+      ...TransitionPresets.ModalPresentationIOS,
+      headerShown: false,
+    }
+  },
+  EditProfile: {
+    title: "Edit Profile",
+    screen: ScreenEditProfile,
+    navigationOptions: {
+      ...TransitionPresets.SlideFromRightIOS,
+      headerShown: false,
+    }
   }
-);
+}, {
+  initialRouteName: 'Home',
+  defaultNavigationOptions: {
+    headerTransparent: true,
+    gestureEnabled: true,
+    cardOverlayEnabled: true,
+    ...TransitionPresets.SlideFromRightIOS,
+  },
+  headerMode: 'screen',
+  gestureDirection: "horizontal",
+  animationEnabled: true
+});
 
 export default AppNavigator;

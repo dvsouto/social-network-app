@@ -9,6 +9,7 @@ import React, { PureComponent } from 'react';
 import { Platform, TouchableNativeFeedback } from 'react-native';
 import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
 
+
 import Constants from '@App/Constants';
 
 // import { Text, View, Image } from 'react-native';
@@ -18,7 +19,9 @@ import styles from './styles';
 
 class HeaderApp extends PureComponent {
   static defaultProps = {
+    title: '',
     showMenu: false,
+    showBack: false,
     showSearch: false,
     drawer: false,
   }
@@ -30,6 +33,10 @@ class HeaderApp extends PureComponent {
   openSidebarMenu(){
     if (this.props.drawer)
       this.props.drawer._root.open();
+  }
+
+  navigateBack(){
+    this.props.navigation.goBack();
   }
 
   //////////////////////////////
@@ -50,9 +57,17 @@ class HeaderApp extends PureComponent {
               </Button>
             ) : false
           }
+
+          {
+            this.props.showBack ? (
+              <Button background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} onPress={ this.navigateBack.bind(this) } transparent>
+                <Icon name='ios-arrow-back' style={ styles.backButtonStyle }  />
+              </Button>
+            ) : false
+          }
         </Left>
         <Body>
-          <Title style={ styles.titleStyle }>Perfil</Title>
+          <Title style={ styles.titleStyle }>{ this.props.title }</Title>
         </Body>
         <Right>
           {

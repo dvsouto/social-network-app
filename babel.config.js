@@ -11,6 +11,7 @@ module.exports = function(api) {
            "@Components": "./components/",
            "@Library": "./library/",
            "@Redux": "./redux/",
+           "@Reducers": "./redux/Reducers/",
            "@Screens": "./screens/",
            "@Models": "./models/",
         }

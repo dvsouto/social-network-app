@@ -24,16 +24,20 @@ class PeopleCard extends Component {
     super(props);
   }
 
+  viewUserProfile(user){
+    this.props.navigation.navigate('UserProfile', { user: this.props.user });
+  }
+
   ////////////////////////////////////////////
 
   render() {
     return (
       <Card style={{flex: 0}}>
-        <CardItem>
+        <CardItem button onPress={ this.viewUserProfile.bind(this) }>
           <Left>
             <Thumbnail source={{uri: 'https://picsum.photos/350/350'}} />
             <Body>
-              <Text>{ this.props.user.name }</Text>
+              <Text>{ this.props.user.name + " " + this.props.user.last_name }</Text>
               <Text note>11 de Dezembro de 1996</Text>
               <Text note>{ this.props.user.distance } km</Text>
             </Body>

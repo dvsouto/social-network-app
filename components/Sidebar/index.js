@@ -11,10 +11,11 @@ import { Container, Drawer, Content, Icon, Left, Button, Text } from 'native-bas
 // import { Normalize } from  '@App/library/Font';
 import Constants from '@App/Constants';
 
-// import Store from '@App/redux/Store';
+import Store from '@App/redux/Store';
+import { doLogout } from '@Reducers/authReducer';
 
-// import { connect } from 'react-redux';
-// import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 import styles from './styles';
 
@@ -32,6 +33,8 @@ class Sidebar extends Component {
     if (this.props.drawer)
       this.props.drawer._root.close();
 
+    Store.dispatch(doLogout());
+
     this.props.navigation.navigate('Auth');
   }
 
@@ -46,7 +49,7 @@ class Sidebar extends Component {
 
         <View style={ styles.user_view }>
           <Icon name='contact' style={ styles.user_icon } />
-          <Text style={ styles.user_text }>Davi Souto</Text>
+          <Text style={ styles.user_text }>{ this.props.user.name + " " + this.props.user.last_name }</Text>
         </View>
 
         { this.renderMenuList() }
@@ -69,4 +72,11 @@ class Sidebar extends Component {
 
 ///////////////////////////////////////////////////////////////////////////
 
-export default Sidebar;
+const mapStateToProps = store => ({
+  user: store.auth.user,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({  }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Sidebar);

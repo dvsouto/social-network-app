@@ -14,6 +14,14 @@ import * as Location from 'expo-location';
 import MapView, { Marker } from 'react-native-maps';
 
 import { Container, Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+import HeaderApp from '@App/components/HeaderApp';
+
+import Store from '@App/redux/Store';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+
+import { findNearestUsers } from '@Reducers/locationReducer';
 
 import Constants from '@App/Constants';
 
@@ -24,92 +32,50 @@ class ScreenExplore extends PureComponent {
   constructor(props){
     super(props);
 
+    this.state = {
+      hasFocus: false,
+    }
+
     // Zoom
     this.latitudeDelta = 0.0043;
     this.longitudeDelta = 0.0034;
-
-    this.state = {
-      loading_user: true,
-      location: false,
-      error_user_location: false,
-      // randomMarker: false
-    };
   }
 
-  async componentWillMount() {
-    if (Platform.OS === 'android' && !Constants.isDevice) {
-      this.setState({
-        error_user_location: 'Oops, essa função não funciona no emulador. Tente no seu aparelho !',
-        loading_user: false
-      });
-    } else {
-      this._getLocationAsync();
-    }
+  componentDidMount(){
+    this.props.navigation.addListener('willFocus', this.onReceiveFocus.bind(this));
+    this.props.navigation.addListener('willBlur', this.onBlur.bind(this));
   }
 
-  _getLocationAsync = async () => {
-    let { status } = await Permissions.askAsync(Permissions.LOCATION);
+  onReceiveFocus(){
+    this.setState({ hasFocus: true });
 
-    if (status !== 'granted') {
-      this.setState({
-        error_user_location: 'Permissão de localização negada',
-        loading_user: false
-      });
+    // Wait save the user location
+    if (! this.props.savedUserLocation)
+    {
+      // Create timer to call function again
+      this._timer_find_users = window.setTimeout(() => this.onReceiveFocus(), 1000);
+
+      return;
     }
 
-    Location.getCurrentPositionAsync({ maximumAge: 5000 }).then((location) => {
-      // if (! this.props.last_location)
-      // {
-      //   this.props.setLastLocation({
-      //     latitude: location.coords.latitude,
-      //     longitude: location.coords.longitude,
-      //     latitudeDelta: this.latitudeDelta,
-      //     longitudeDelta: this.longitudeDelta
-      //   });
-      // }
-      //
-      // this.props.getLocalization(location.coords.latitude, location.coords.longitude);
+    this._timer_find_users = false;
 
-      location = {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: this.latitudeDelta,
-        longitudeDelta: this.longitudeDelta
-      }
+    this.props.findNearestUsers();
+  }
 
-      this.setState({
-        location: location,
-        loading_user: false
-      });
-    });
-
-    // this.generateRandomMarker(location.coords);
-  };
+  onBlur(){
+    this.setState({ hasFocus: false });
+  }
 
   ////////////////////////////////////////////
 
   render() {
+    if (! this.state.hasFocus)
+      return null;
+
     return (
       <Container>
-        <Header style={ styles.headerStyle }>
-          <Left>
-            {/*
-            <Button transparent>
-              <Icon name='arrow-back' />
-            </Button>
-            */}
-          </Left>
-          <Body>
-            <Title style={ styles.titleStyle }>Explorar</Title>
-          </Body>
-          <Right>
-            {/*
-            <Button transparent>
-              <Icon name='menu' style={ styles.menuStyle } />
-            </Button>
-            */}
-          </Right>
-        </Header>
+        <HeaderApp title="Explorar" showMenu={ false } showSearch={ false }  />
 
         <Body style={ styles.container }>
           { this.renderMap() }
@@ -122,7 +88,7 @@ class ScreenExplore extends PureComponent {
    * Renderizar mapa
    */
   renderMap(){
-    if (this.state.loading_user)
+    if (! this.props.savedUserLocation && ! this.props.findedUsers)
     {
       return (
         <Text>Carregando...</Text>
@@ -131,7 +97,12 @@ class ScreenExplore extends PureComponent {
 
     return (
       <MapView
-        initialRegion={ this.state.location }
+        initialRegion={{
+          latitude: this.props.location.lat,
+          longitude: this.props.location.lon,
+          latitudeDelta: this.latitudeDelta,
+          longitudeDelta: this.longitudeDelta,
+        }}
         loadingEnabled={ true }
         ref={ (ref) => this.map = ref }
         style={ styles.mapStyle }
@@ -143,6 +114,7 @@ class ScreenExplore extends PureComponent {
         showsMyLocationButton={ false }
       >
         { this.renderUserMarker() }
+        { this.renderNearestUsersMarkers() }
       </MapView>
     );
   }
@@ -154,8 +126,8 @@ class ScreenExplore extends PureComponent {
     return (
       <MapView.Marker
         coordinate={{
-          latitude: this.state.location.latitude,
-          longitude: this.state.location.longitude
+          latitude: this.props.location.lat,
+          longitude: this.props.location.lon
         }}
         title={ "Localização" }
         description={ "Você está aqui" }
@@ -172,16 +144,47 @@ class ScreenExplore extends PureComponent {
       </MapView.Marker>
     )
   }
+
+  renderNearestUsersMarkers() {
+    return this.props.nearestUsers.map((user) => {
+      if (! user.location || ! user.location.coordinates || ! user.location.coordinates.lat)
+        return;
+
+      return (
+        <MapView.Marker
+          key={ user.id }
+          coordinate={{
+            latitude: user.location.coordinates.lat,
+            longitude: user.location.coordinates.lon,
+          }}
+          title={ user.name + " " + user.last_name }
+          description={ user.distance + "km" }
+          opacity={ 0.7 }
+          pinColor="#333"
+          flat={ true }
+          anchor={{ x: 0.5, y: 0.5 }}
+        >
+          <Text style={ styles.gambIcon }></Text>
+          <Icon name="ios-person" size={ 22 } color="#333" style={ styles.userIcon } />
+        </MapView.Marker>
+      )
+    });
+  }
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
-export default ScreenExplore;
+const mapStateToProps = store => ({
+  location: store.location.location,
 
-// const mapStateToProps = store => ({
-// });
-//
-// const mapDispatchToProps = dispatch =>
-//   bindActionCreators({  }, dispatch);
-//
-// export default connect(mapStateToProps, mapDispatchToProps)(ScreenAbout);
+  savedUserLocation: store.location.savedUserLocation,
+  checkedLocation: store.location.checkedLocation,
+
+  findedUsers: store.location.findedUsers,
+  nearestUsers: store.location.nearestUsers,
+});
+
+const mapDispatchToProps = dispatch =>
+  bindActionCreators({ findNearestUsers }, dispatch);
+
+export default connect(mapStateToProps, mapDispatchToProps)(ScreenExplore);

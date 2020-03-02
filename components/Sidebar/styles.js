@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from 'react-native';
+import { StyleSheet, Platform, NativeModules } from 'react-native';
 
 import Constants from '@App/Constants';
 import { Normalize } from  '@App/library/Font';
@@ -8,7 +8,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     paddingBottom: Normalize(22),
     // backgroundColor: "#333"
-    backgroundColor: "#fff"
+    backgroundColor: "#fff",
+    marginTop: Platform.select({ android: NativeModules.StatusBarManager.HEIGHT, ios: 0 })
   },
 
   top_view: {
