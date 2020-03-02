@@ -60,6 +60,7 @@ const GraphqlMiddleware = ({ dispatch }) => next => action => {
         // Resolve promise
         window.setTimeout(() => resolve(action_dispatch), 1);
     }).catch((error) => {
+      console.log(error);
       if (error.graphQLErrors && error.graphQLErrors.length > 0)
         error = error.graphQLErrors[0].message;
 

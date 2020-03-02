@@ -25,6 +25,7 @@ import { AsyncStorage, Alert } from "react-native";
    SET_PERSISTED_DATA: "auth/set_persisted_data",
 
    SET_FIELD: "auth/set_field",
+   SET_USER_FIELD: "auth/user/set_field",
    RESET_FIELDS: "register/reset_fields",
  }
 
@@ -129,6 +130,17 @@ export const authReducer = (state = initialState, action) => {
           ...state
         }
 
+      case Types.SET_USER_FIELD:
+        return {
+          ...state,
+          user: {
+            ...state.user,
+            name: action.field == "name" ? action.value : state.user.name,
+            last_name: action.field == "last_name" ? action.value : state.user.last_name,
+            photo: action.field == "photo" ? action.value : state.user.photo,
+          }
+        }
+
       case Types.RESET_FIELDS:
         return {
           ...state,
@@ -163,7 +175,8 @@ export const authReducer = (state = initialState, action) => {
                id,
                email,
                name,
-               last_name
+               last_name,
+               photo
              }
            }
          }
@@ -192,6 +205,12 @@ export const setPersistedData = (email, token, user) => ({
 
 export const setField = (field, value) => ({
   type: Types.SET_FIELD,
+  field,
+  value: value || '',
+});
+
+export const setUserField = (field, value) => ({
+  type: Types.SET_USER_FIELD,
   field,
   value: value || '',
 });

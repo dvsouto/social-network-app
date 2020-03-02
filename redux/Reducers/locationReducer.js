@@ -242,6 +242,7 @@ export const locationReducer = (state = initialState, action) => {
             name,
             last_name,
             email,
+            photo,
             distance,
             location {
               coordinates {

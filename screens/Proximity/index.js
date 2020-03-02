@@ -5,7 +5,7 @@
  */
 
 import React, { PureComponent } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, RefreshControl } from 'react-native';
 
 import { Container, Content } from 'native-base';
 
@@ -113,19 +113,41 @@ class ScreenProximity extends PureComponent {
     this.props.findNearestUsers();
   }
 
+  _onRefresh(){
+    if (! this.props.findingUsers)
+      this.props.findNearestUsers();
+  }
+
   ////////////////////////////////////////////
 
   render() {
     return (
       <Container>
         <HeaderApp title="Proximidades" showSearch />
-        <Content>
+        <Content
+          refreshControl={ this.controlRefreshControl() }
+        >
           <GenderSelection />
 
           { this.renderNearestUsers() }
         </Content>
       </Container>
     );
+  }
+
+  controlRefreshControl(){
+    if (this.props.savedUserLocation)
+    {
+      return (
+        <RefreshControl
+          refreshing={ this.props.findingUsers }
+          onRefresh={ this._onRefresh.bind(this) }
+          tintColor="#3498DB"
+        />
+      )
+    }
+
+    return false;
   }
 
   renderNearestUsers(){
@@ -178,6 +200,7 @@ const mapStateToProps = store => ({
   statusLocation: store.location.status,
 
   findedUsers: store.location.findedUsers,
+  findingUsers: store.location.findingUsers,
   nearestUsers: store.location.nearestUsers,
 });
 

@@ -7,8 +7,9 @@
 import React, { PureComponent } from 'react';
 
 import { Platform, TouchableNativeFeedback } from 'react-native';
-import { Header, Left, Body, Right, Button, Icon, Title } from 'native-base';
+import { Header, Left, Body, Right, Button, Icon, Title, Text } from 'native-base';
 
+import LoadingIndicator from "@App/components/LoadingIndicator";
 
 import Constants from '@App/Constants';
 
@@ -20,10 +21,15 @@ import styles from './styles';
 class HeaderApp extends PureComponent {
   static defaultProps = {
     title: '',
+    drawer: false,
+
     showMenu: false,
     showBack: false,
     showSearch: false,
-    drawer: false,
+    showSave: false,
+    loading: false,
+
+    btnSaveFunction: () => {},
   }
 
   constructor(props){
@@ -51,7 +57,7 @@ class HeaderApp extends PureComponent {
           </Button>
           */}
           {
-            Platform.OS == "android" && this.props.showMenu ? (
+            Platform.OS == "android" && this.props.showMenu && ! this.props.loading ? (
               <Button background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} onPress={ this.openSidebarMenu.bind(this) } transparent>
                 <Icon name='menu' style={ styles.menuStyle }  />
               </Button>
@@ -59,7 +65,7 @@ class HeaderApp extends PureComponent {
           }
 
           {
-            this.props.showBack ? (
+            this.props.showBack && ! this.props.loading ? (
               <Button background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} onPress={ this.navigateBack.bind(this) } transparent>
                 <Icon name='ios-arrow-back' style={ styles.backButtonStyle }  />
               </Button>
@@ -78,16 +84,45 @@ class HeaderApp extends PureComponent {
             ) : false
           }
 
-          {
-            this.props.showSearch ? (
-              <Button background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} transparent>
-                <Icon name='search' style={ styles.menuStyle }  />
-              </Button>
-            ) : false
-          }
+          { this.renderSearchButton() }
+          { this.renderSaveButton() }
+          { this.renderLoading() }
         </Right>
       </Header>
     )
+  }
+
+  renderSearchButton(){
+    if (this.props.showSearch && ! this.props.loading)
+    {
+      return (
+        <Button background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} transparent>
+          <Icon name='search' style={ styles.menuStyle }  />
+        </Button>
+      )
+    }
+
+    return false;
+  }
+
+  renderSaveButton(){
+    if (this.props.showSave && ! this.props.loading)
+    {
+      return (
+      <Button onPress={ this.props.btnSaveFunction.bind(this) } background={TouchableNativeFeedback.Ripple("rgba(255,255,255,0.15)", false)} transparent>
+        <Text style={ styles.saveText }>Salvar</Text>
+      </Button>
+      )
+    }
+
+    return false;
+  }
+
+  renderLoading(){
+    if (this.props.loading)
+      return (<LoadingIndicator color="white" />);
+
+    return false;
   }
 }
 

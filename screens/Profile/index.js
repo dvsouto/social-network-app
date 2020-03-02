@@ -19,6 +19,8 @@ import { bindActionCreators } from 'redux';
 
 import { setStatusLocation, getUserLocation } from '@Reducers/locationReducer';
 
+import Environment from "@App/Environment";
+
 // import { LinearGradient } from 'expo-linear-gradient';
 
 import styles from './styles';
@@ -76,7 +78,7 @@ class ScreenProfile extends PureComponent {
               <View style={ styles.profileHeader }>
                 <View style={ styles.thumbnailView }>
                   <View style={ styles.thumbnailCircle }>
-                    <Thumbnail large source={{uri: "https://avatars0.githubusercontent.com/u/16228821?s=460&v=4"}} style={ styles.thumbnailProfile } />
+                    { this.renderProfileThumbnail() }
                   </View>
                 </View>
 
@@ -167,6 +169,21 @@ class ScreenProfile extends PureComponent {
         </Container>
       </Drawer>
     );
+  }
+
+  renderProfileThumbnail(){
+    var img = false;
+
+    if (this.props.user.photo)
+    {
+      img = { uri: Environment.storageProfilePhoto + this.props.user.photo }
+    } else {
+      img = require("@App/assets/icons/empty_photo.jpg")
+    }
+
+    return (
+      <Thumbnail large source={ img } style={ styles.thumbnailProfile } />
+    )
   }
 }
 

@@ -5,25 +5,31 @@
  * @since 28/02/2020
  */
 
-import ApolloClient from "apollo-boost";
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from "apollo-boost";
 
 import Store from '@App/redux/Store';
 import Environment from "@App/Environment";
+
+import { createUploadLink } from "apollo-upload-client";
 
 // Create ApolloClient
 if (! window._graphql_client)
 {
   window._graphql_client = new ApolloClient({
-    uri: Environment.apiUrl,
-    request: (operation) => {
+    cache: new InMemoryCache(),
+    link: new ApolloLink((operation, forward) => {
       const token = Store.getState().auth.token;
 
       operation.setContext({
         headers: {
           Authorization: token ? `Bearer ${token}` : ''
         }
-      })
-    },
+      });
+
+      return forward(operation);
+    }).concat(new createUploadLink({
+      uri: Environment.apiUrl,
+    })),
   });
 
   window._graphql_client.defaultOptions = {

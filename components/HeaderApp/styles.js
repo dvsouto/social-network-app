@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
   backButtonStyle: {
     color: "white",
     fontSize: 28,
+  },
+  saveText: {
+    color: "white"
   }
 });
 

@@ -8,6 +8,8 @@ import React, { Component } from 'react';
 import { Image } from 'react-native';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Right, Center, Body } from 'native-base';
 
+import Environment from "@App/Environment";
+
 import styles from './styles';
 
 class PeopleCard extends Component {
@@ -35,7 +37,7 @@ class PeopleCard extends Component {
       <Card style={{flex: 0}}>
         <CardItem button onPress={ this.viewUserProfile.bind(this) }>
           <Left>
-            <Thumbnail source={{uri: 'https://picsum.photos/350/350'}} />
+            { this.renderThumbnailProfile() }
             <Body>
               <Text>{ this.props.user.name + " " + this.props.user.last_name }</Text>
               <Text note>11 de Dezembro de 1996</Text>
@@ -70,6 +72,12 @@ class PeopleCard extends Component {
         </CardItem>
       </Card>
     );
+  }
+
+  renderThumbnailProfile(){
+    if (this.props.user.photo && typeof this.props.user.photo == "string")
+      return (<Thumbnail source={{ uri: Environment.storageProfilePhoto + this.props.user.photo }} />)
+    return (<Thumbnail source={ require("@App/assets/icons/empty_photo.jpg") } />)
   }
 }
 
