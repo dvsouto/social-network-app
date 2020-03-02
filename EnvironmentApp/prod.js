@@ -8,4 +8,5 @@
 export const prod = {
   get: "prod",
   apiUrl: 'http://bitnary.com.br:3000/graphql',
+  storageProfilePhoto: 'http://bitnary.com.br:3000/storage/profile/',
 }

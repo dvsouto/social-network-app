@@ -7,4 +7,5 @@
 export const dev = {
   get: "dev",
   apiUrl: 'http://bitnary.com.br:3000/graphql',
+  storageProfilePhoto: 'http://bitnary.com.br:3000/storage/profile/', 
 }

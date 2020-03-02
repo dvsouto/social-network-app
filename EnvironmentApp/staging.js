@@ -7,4 +7,5 @@
 export const staging = {
   get: "staging",
   apiUrl: 'http://bitnary.com.br:3000/graphql',
+  storageProfilePhoto: 'http://bitnary.com.br:3000/storage/profile/',
 }
