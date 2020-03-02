@@ -10,6 +10,7 @@ import { AppLoading } from 'expo';
 import { Root } from "native-base";
 
 import * as Font from 'expo-font';
+import { Asset } from 'expo-asset';
 
 import { AsyncStorage } from "react-native";
 
@@ -27,6 +28,14 @@ import Navigator from '@App/Navigator';
  */
 function cacheFonts(fonts) {
   return Font.loadAsync(fonts);
+}
+
+/**
+ * Carregar imagens em cache
+ * @param string[] images
+ */
+function cacheImages(images) {
+  return Asset.loadAsync(images);
 }
 
 export default class App extends Component {
@@ -58,6 +67,11 @@ export default class App extends Component {
       'roboto-light': require('@App/assets/fonts/Roboto-Light.ttf'),
     });
 
+    const images = cacheImages([
+      require('./assets/icons/rocket.png'),
+      require('./assets/icons/empty_photo.jpg'),
+    ]);
+
     const async_get_email = AsyncStorage.getItem("@social-network:auth:email").then(function(_email){
       email = _email;
 
@@ -74,7 +88,7 @@ export default class App extends Component {
       console.log("USER:", user);
     });
 
-    await Promise.all([ fonts, async_get_token, async_get_token, async_get_user ]);
+    await Promise.all([ fonts, images, async_get_token, async_get_token, async_get_user ]);
 
     Store.dispatch(setPersistedData(email, token, user));
   }
