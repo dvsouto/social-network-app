@@ -32,6 +32,7 @@ expo build:ios
 ----
 
 **Powered By:** 
+- NodeJS (v12.22.9)
 - React Native (SDK 35)
 - Expo (SDK 35)
 - GraphQL v14.6
